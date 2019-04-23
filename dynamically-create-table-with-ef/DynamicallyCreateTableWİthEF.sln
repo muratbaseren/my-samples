@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicallyCreateTableWİthEF", "DynamicallyCreateTableWİthEF\DynamicallyCreateTableWİthEF.csproj", "{C3AE2491-01CD-4B39-B1C6-05CB837B964A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C3AE2491-01CD-4B39-B1C6-05CB837B964A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3AE2491-01CD-4B39-B1C6-05CB837B964A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3AE2491-01CD-4B39-B1C6-05CB837B964A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3AE2491-01CD-4B39-B1C6-05CB837B964A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8B6C2F9D-98AD-4C39-AA0E-6B603E7B8D96}
+	EndGlobalSection
+EndGlobal

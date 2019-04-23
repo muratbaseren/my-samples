@@ -1,0 +1,116 @@
+﻿@model Product
+@{
+    ViewBag.Title = "Add Images To Product";
+}
+
+<style>
+    #productpictures {
+        border: 1px dashed #808080;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-5">Add Images To Product</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 my-3">
+        <div class="text-right mb-2">
+            @Ajax.ActionLink("Yenile", "GetProductImages", new { id = Model.Id }, new AjaxOptions { HttpMethod = "GET", InsertionMode = InsertionMode.Replace, UpdateTargetId = "productpictures", LoadingElementId = "loading", LoadingElementDuration = 300 }, new { @class = "btn btn-primary", id = "refreshbutton" })
+        </div>
+        <div class="mt-2">
+            <div id="productpictures" class="text-center">
+                <span>Ürüne ait görseller burada görüntülenir..</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 my-1">
+        <div class="error alert alert-danger" style="display:none;"></div>
+    </div>
+    <div class="col-md-12">
+        <!-- /Product/UploadProductImages/5  -->
+        @using (Ajax.BeginForm("UploadProductImages", new { id = Model.Id }, new AjaxOptions { HttpMethod = "POST" }, new { @class = "dropzone", id = "mydropzone", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+        }
+    </div>
+    <div class="col-md-12 text-right mt-4">
+        <button type="button" class="btn btn-primary" id="uploadbutton">
+            <i class="fa fa-upload"></i> Yükle
+        </button>
+    </div>
+</div>
+
+
+@section _Scripts{
+
+    <script>
+
+        Dropzone.autoDiscover = false;
+
+        $(function () {
+
+            var dz = null;
+
+            $("#mydropzone").dropzone({
+                autoProcessQueue: false,
+                paramName: "productpictures",
+                maxFilesize: 1,  //mb,
+                maxThumbnailFilesize: 1, //mb,
+                maxFiles: 5,
+                parallelUploads: 5,
+                acceptedFiles: ".jpeg,.png,.jpg",
+                uploadMultiple: false,
+                addRemoveLinks: true,
+                //resizeWidth:128,
+                init: function () {
+                    dz = this;
+
+                    $("#uploadbutton").click(function () {
+                        dz.processQueue();
+                        $(this).attr("disabled", "disabled");
+                    });
+                },
+                //complete: function (file) {
+                //    console.log(file);
+                //},
+                //completemultiple: function (e) {
+                //    console.log("completemultiple", e);
+                //},
+                success: function (file) {
+                    var preview = $(file.previewElement);
+                    preview.addClass("dz-success");
+
+                    setTimeout(function () {
+                        dz.removeFile(file);
+                    }, 3000);
+                },
+                queuecomplete: function () {
+                    refreshProductPicture();
+                    $("#uploadbutton").removeAttr("disabled");
+                },
+                error: function (file, result, xhr) {
+                    $(".error").append("<div class=''><i class='fa fa-remove'></i>&nbsp;<b>" + "Dosya : " + file.name + "</b> yüklenemedi(" + result.message + ").<div>");
+
+                    var preview = $(file.previewElement);
+                    preview.addClass("dz-error").find(".dz-error-message").text(result.message);
+
+                },
+                dictDefaultMessage: "Buraya görsellerinizi sürükle-bırak yapabilirsiniz.",
+                dictRemoveFile: "Dosyayı Sil"
+            });
+
+            $("#refreshbutton").prepend('<i id="loading" class="fa fa-refresh fa-spin" style="display:none;"></i>&nbsp;')
+            refreshProductPicture();
+        });
+
+        function refreshProductPicture() {
+            $("#refreshbutton").click();
+        }
+
+    </script>
+
+
+}

@@ -1,0 +1,12 @@
+{
+    "name":"app-name",
+    "displayName": "App Name",
+    "description": "This is a description.",
+    "version": "1.0.0",
+    "scripts": {
+        "lite-server": "lite-server"
+    },
+    "dependencies": {
+        "lite-server": "^2.3.0"
+    }
+}

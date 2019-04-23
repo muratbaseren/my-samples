@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.Title = "Index2";
+}
+
+<h2>Index2</h2>
+
+<style>
+    .table-filter {
+        display: block;
+        text-align: center;
+    }
+
+        .table-filter input {
+            border: 0;
+            border-bottom: 1px solid #9e9e9e;
+            padding: 0 4px;
+            text-align: center;
+        }
+
+            .table-filter input:focus {
+                border-bottom: 2px solid #0094ff;
+                color: #0094ff;
+            }
+
+    .table-title {
+        display: block;
+        text-align: center;
+    }
+</style>
+
+
+<div class="row" ng-app="myapp">
+    <div class="col-md-12" ng-controller="ctrlJsonplaceholder">
+
+        <table class="table table-bordered table-hover table-responsive">
+            <thead>
+                <tr>
+                    <th>
+                        <div class="table-title">Id</div>
+                        <filter-id></filter-id>
+                    </th>
+                    <th>
+                        <div class="table-title">Name</div>
+                        <filter-name></filter-name>
+                    </th>
+                    <th>
+                        <div class="table-title">Email</div>
+                        <filter-email></filter-email>
+                    </th>
+                    <th>
+                        <div class="table-title">Username</div>
+                        <filter-username></filter-username>
+                    </th>
+                    <th>
+                        <div class="table-title">Address</div>
+                        <filter-address></filter-address>
+                    </th>
+                    <th>
+                        <div class="table-title">Geo</div>
+                        <filter-geo></filter-geo>
+                    </th>
+                    <th>
+                        <div class="table-title">Phone</div>
+                        <filter-phone></filter-phone>
+                    </th>
+                    <th>
+                        <div class="table-title">Website</div>
+                        <filter-website></filter-website>
+                    </th>
+                    <th>
+                        <div class="table-title">Company</div>
+                        <filter-company></filter-company>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="user in users | filter:tableFilter">
+                    <td>{{user.id}}</td>
+                    <td>{{user.name | toUpper}}</td>
+                    <td><a href="mailto:{{user.email}}" target="_blank">{{user.email}}</a></td>
+                    <td>{{user.username}}</td>
+                    <td>{{user.address}}</td>
+                    <td>{{user.geo}}</td>
+                    <td>{{user.phone}}</td>
+                    <td><a href="http://www.{{user.website}}" target="_blank">{{user.website}}</a></td>
+                    <td>{{user.company | toUpper}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="~/Scripts/jsonplaceholder/jsonplaceholder.module.js"></script>
+<script src="~/Scripts/jsonplaceholder/filters/jsonplaceholder.filter.js"></script>
+<script src="~/Scripts/jsonplaceholder/services/jsonplaceholder.service.js"></script>
+<script src="~/Scripts/jsonplaceholder/directives/jsonplaceholder.directive.js"></script>
+<script src="~/Scripts/jsonplaceholder/controllers/jsonplaceholder.controller.js"></script>
+<script src="~/Scripts/App.js"></script>

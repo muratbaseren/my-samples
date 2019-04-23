@@ -1,0 +1,39 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "hello world 1",
+      "author": "muratbaseren"
+    },
+    {
+      "id": 2,
+      "title": "hello world 2",
+      "author": "muratbaseren"
+    },
+    {
+      "title": "hello world 5",
+      "author": "muratbaseren",
+      "id": 3
+    }
+  ],
+  "comments": [
+    {
+      "id": 11,
+      "body": "some comment",
+      "postId": 1
+    },
+    {
+      "id": 12,
+      "body": "some comment 2",
+      "postId": 1
+    },
+    {
+      "id": 13,
+      "body": "some comment 3",
+      "postId": 2
+    }
+  ],
+  "profile": {
+    "name": "Murat başeren"
+  }
+}

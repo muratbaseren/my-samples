@@ -1,0 +1,252 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+    <style>
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-size: 11pt;
+            background-color: #ededed;
+        }
+
+        footer {
+            background-color: #f4f4f4;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+
+        .dropdown-submenu {
+            position: relative;
+        }
+
+            .dropdown-submenu > .dropdown-menu {
+                top: 0;
+                left: 100%;
+                margin-top: -6px;
+                margin-left: -1px;
+                -webkit-border-radius: 0 6px 6px 6px;
+                -moz-border-radius: 0 6px 6px;
+                border-radius: 0 6px 6px 6px;
+            }
+
+            .dropdown-submenu:hover > .dropdown-menu {
+                display: block;
+            }
+
+            .dropdown-submenu > a:after {
+                display: block;
+                content: " ";
+                float: right;
+                width: 0;
+                height: 0;
+                border-color: transparent;
+                border-style: solid;
+                border-width: 5px 0 5px 5px;
+                border-left-color: #ccc;
+                margin-top: 5px;
+                margin-right: -10px;
+            }
+
+            .dropdown-submenu:hover > a:after {
+                border-left-color: #fff;
+            }
+
+            .dropdown-submenu.pull-left {
+                float: none;
+            }
+
+                .dropdown-submenu.pull-left > .dropdown-menu {
+                    left: -100%;
+                    margin-left: 10px;
+                    -webkit-border-radius: 6px 0 6px 6px;
+                    -moz-border-radius: 6px 0 6px 6px;
+                    border-radius: 6px 0 6px 6px;
+                }
+    </style>
+
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Endless Menu Sample In MVC</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+
+                @{
+                    // Veritabanıdnan her defasında çekiyoruz ama siz 
+                    // bunu cache'den alabilirsiniz.
+                    // Daha hızlı olacaktır.
+
+                    EndlessMenuContext db = new EndlessMenuContext();
+                    var rootcats = db.Categories
+                        .Where(x => x.ParentCategoryId == null)
+                        .OrderBy(x => x.OrderNo);
+                }
+
+                @CreateMenu(rootcats)
+
+                @*<li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+
+                <!-- Örnek bir sonsuz menu item -->
+                <!-- Amacımız bu HTML 'i MVC ye oluşturtmak.
+                Dolayısı ile örnek HTML 'i iyi anlamak gerekiyor. -->
+                <!-- Yukarıdaki "@CreateMenu..." kodunu açıklama satırı yaparak
+                ve sonrasında aşağıdaki HTML kodu -->
+                <!-- Aktif hale getirerek ulaşmaya çalıştığımızı görebilirsiniz. -->
+                <!-- Sonrasını yukarıdaki Helper method halledecektir.-->
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                        role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="#">Subsubmenu</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Subsubmenu action</a></li>
+                                <li><a class="dropdown-item" href="#">Another subsubmenu action</a></li>
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#">Subsubmenu</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Subsubmenu1 action</a></li>
+                                        <li><a class="dropdown-item" href="#">Subsubmenu2 action</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li class="dropdown-item" href="#">Something else here</li>
+                    </ul>
+                </li>*@
+
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search"
+                       aria-label="Search">
+
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                    Search
+                </button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <header>
+                    <br />
+                    <h2>Endless Menu Sample In MVC</h2>
+                    <hr />
+                </header>
+
+                <article>
+                    <p>Laoreet ac, aliquam sit amet justo nunc tempor, metus vel placerat suscipit, orci nisl iaculis eros, a tincidunt nisi odio eget lorem nulla condimentum tempor mattis ut vitae feugiat augue cras ut metus a risus iaculis scelerisque eu ac ante fusce non varius purus aenean nec magna felis fusce vestibulum.</p>
+                    <p>Velit mollis odio sollicitudin lacinia aliquam posuere, sapien elementum lobortis tincidunt, turpis dui ornare nisl, sollicitudin interdum turpis nunc eget sem nulla eu ultricies orci praesent id augue nec lorem pretium congue sit amet ac nunc fusce iaculis lorem eu diam hendrerit at mattis purus dignissim vivamus mauris tellus, fringilla.</p>
+                    <p>Vel dapibus a, blandit quis erat vivamus elementum aliquam luctus etiam fringilla pretium sem vitae sodales mauris id nulla est praesent laoreet, metus vel auctor aliquam, eros purus vulputate leo, eget consequat neque quam id tellus duis ultricies tempor tortor, vitae dignissim ligula mattis nec in hac habitasse platea dictumst.</p>
+                    <p>Ut arcu enim, dictum quis ultrices id, sagittis eget nulla sed nunc mi, congue ut ultricies ac, varius a eros donec porttitor, libero fermentum fringilla laoreet, eros arcu sodales ante, ut dictum risus lectus vel quam integer ultricies, nunc eget elementum euismod, orci enim vestibulum orci, nec suscipit urna odio.</p>
+                </article>
+            </div>
+        </div>
+    </div>
+
+    <footer class="px-4 py-4">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="~/images/logo.png" height="55" />
+            </div>
+            <div class="col-md-6 text-right">
+                Designed by <a href="https://muratbaseren.wordpress.com" target="_blank">Kadir Murat Başeren</a><br />
+                Udemy Eğitimlerim için <a href="https://rebrand.ly/udemy-kuponlarim" target="_blank">tklayınız</a>.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+@*
+    Menü oluşumu için helper metotlardan yararlanılmıştır.
+*@
+
+@helper CreateMenu(IEnumerable<Category> rootcats)
+    {
+        foreach (Category rootcat in rootcats.OrderBy(x => x.OrderNo))
+        {
+            if (rootcat.Categories.Count() > 0)
+            {
+                <li class="nav-item dropdown" data-order-no="@rootcat.OrderNo" data-id="@rootcat.Id">
+                    <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                       href="@Url.Action(rootcat.ActionName, rootcat.ControllerName)@rootcat.QueryStrings">
+                        @rootcat.Name
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        @CreateSubMenuItems(rootcat)
+                    </ul>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item" data-order-no="@rootcat.OrderNo" data-id="@rootcat.Id"
+                    href="@Url.Action(rootcat.ActionName, rootcat.ControllerName)@rootcat.QueryStrings">
+                    @rootcat.Name
+                </li>
+            }
+        }
+}
+
+@helper CreateSubMenuItems(Category cat)
+    {
+        foreach (Category subCat in cat.Categories.OrderBy(x => x.OrderNo))
+        {
+            if (subCat.Categories.Count() > 0)
+            {
+                <li class="dropdown-submenu">
+                    <a class="dropdown-item dropdown-toggle" data-order-no="@subCat.OrderNo" data-id="@subCat.Id"
+                       href="@Url.Action(subCat.ActionName, subCat.ControllerName)@subCat.QueryStrings">
+                        @subCat.Name
+                    </a>
+                    @if (subCat.Categories.Count() > 0)
+                    {
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            @CreateSubMenuItems(subCat)
+                        </ul>
+                    }
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a class="dropdown-item" data-order-no="@subCat.OrderNo" data-id="@subCat.Id"
+                       href="@Url.Action(subCat.ActionName, subCat.ControllerName)@subCat.QueryStrings">
+                        @subCat.Name
+                    </a>
+                </li>
+            }
+        }
+}

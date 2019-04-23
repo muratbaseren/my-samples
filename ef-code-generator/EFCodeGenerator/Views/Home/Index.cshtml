@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Code Generator</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <p id="efcode">
+
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <button id="btnSend" type="button" data-post-url="@Url.Action("Index")" class="btn btn-success">Send</button>
+    </div>
+</div>
+
+
+
+@section _Scripts{
+
+    <script>
+
+        var obj = {
+            entities: [
+                {
+                    name: "Student",
+                    tableName: "Students",
+                    schema: "School",
+                    props: [
+                        {
+                            type: "int",
+                            name: "Id",
+                            key: "true",
+                            identity: "true"
+                        },
+                        {
+                            type: "string",
+                            name: "Name",
+                            displayName : "Name",
+                            required: "true"
+                        },
+                        {
+                            type: "string",
+                            name: "Surname",
+                            required: "true"
+                        },
+                        {
+                            type: "int?",
+                            name: "Age"
+                        },
+                        {
+                            type: "list",
+                            name: "Lessons",
+                            navigationType: "Lesson"
+                        }
+                    ]
+                },
+                {
+                    name: "Lesson",
+                    tableName: "Lessons",
+                    schema: "School",
+                    props: [
+                        {
+                            type: "int",
+                            name: "Id",
+                            key: "true",
+                            identity: "true"
+                        },
+                        {
+                            type: "string",
+                            name: "Name",
+                            required: "true"
+                        },
+                        {
+                            type: "string",
+                            name: "Description"
+                        },
+                        {
+                            type: "bool",
+                            name: "IsVisible",
+                            required: "true"
+                        }
+                    ]
+                }
+            ],
+            errors: [
+                {
+                    type: "required",
+                    format: "Field {0} can not be empty."
+                },
+                {
+                    type: "stringLength",
+                    format: "Field {0} max size can be {1}."
+                },
+            ]
+        };
+
+        $("#btnSend").click(function () {
+            var url = $(this).data("post-url");
+            $("#efcode").load(url, obj);
+        });
+
+    </script>
+
+}

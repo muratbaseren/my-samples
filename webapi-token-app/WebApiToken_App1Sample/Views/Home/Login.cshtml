@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Login</h2>
+        <hr />
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="form-horizontal">
+            @using (Html.BeginForm())
+            {
+            <div class="form-group">
+                <label class="col-md-2 control-label">Username : </label>
+                <div class="col-md-10">
+                    <input type="text" name="username" placeholder="username" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">Password : </label>
+                <div class="col-md-10">
+                    <input type="password" name="password" placeholder="password" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-10 col-md-offset-2">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @ViewBag.Result
+    </div>
+</div>
