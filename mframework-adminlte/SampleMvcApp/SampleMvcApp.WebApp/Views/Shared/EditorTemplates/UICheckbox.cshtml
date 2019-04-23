@@ -1,0 +1,26 @@
+﻿@model string
+
+@{
+
+    var propName = string.Empty;
+    // Get the container model (Person for example)
+    var attribute = ViewData.ModelMetadata.ContainerType
+      // Get the property we are displaying for (Birthday)
+      .GetProperty(ViewData.ModelMetadata.PropertyName)
+      // Get all attributes of type UIDateTimeAttribute
+      .GetCustomAttributes(true)
+      // Cast the result as UIDateTimeAttribute
+      .Select(a => a as SampleMvcApp.Web.Core.Mvc.Attributes.UICheckboxAttribute)
+      // Get the first one or null
+      .FirstOrDefault(a => a != null);
+
+
+    propName = attribute?.PropName;
+}
+
+<div class="checkbox checkbox-circle checkbox-info peers ai-c mB-15">
+    <input type="checkbox" name="@propName" id="@propName" class="peer" />
+    <label class="peers peer-greed js-sb ai-c">
+        <span class="peer peer-greed"></span>
+    </label>
+</div>

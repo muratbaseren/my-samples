@@ -1,0 +1,44 @@
+﻿@model IEnumerable<SampleMvcApp.Entities.Concrete.MemberQuery>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.NameSurname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.NameSurname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsActive)
+        </td>
+        <td>
+            <button class="btn btn-warning" data-id="@item.Id" data-toggle="modal" data-target="#editmodal" type="button">
+                <span class="fa fa-pencil"></span> <span class="ml-1">Düzenle</span>
+            </button>
+
+            <button class="btn btn-info" data-id="@item.Id" data-toggle="modal" data-target="#detailsmodal" type="button">
+                <span class="fa fa-info"></span> <span class="ml-1">Detaylar</span>
+            </button>
+
+            <button class="btn btn-danger" data-id="@item.Id" data-toggle="modal" data-target="#deletemodal" type="button">
+                <span class="fa fa-trash"></span> <span class="ml-1">Sil</span>
+            </button>
+        </td>
+    </tr>
+}
+
+</table>

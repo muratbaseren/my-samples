@@ -1,0 +1,109 @@
+﻿@model IEnumerable<SampleMvcApp.Entities.Concrete.MemberQuery>
+
+@{
+    ViewBag.Title = "Members";
+}
+
+@AdminLTE.PageHeader(title: "Members", faIcon: "users")
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <p>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#createmodal" type="button">
+                    <span class="fa fa-plus"></span> Create New
+                </button>
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" id="list">
+            
+        </div>
+    </div>
+</section>
+
+@AdminLTE.CreatePartialModal(id:"createmodal", title:"Create Member",color:"primary")
+@AdminLTE.CreatePartialModal(id:"editmodal", title: "Edit Member",color:"warning")
+@AdminLTE.CreatePartialModal(id:"detailsmodal", title: "Details Member", useSaveButton: false)
+@AdminLTE.CreatePartialModal(id:"deletemodal", title: "Delete Member",color:"danger", saveButtonText:"Sil")
+
+@section Scripts{
+
+    <script>
+
+        $(function () {
+            $("#list").load('@Url.Action("ListMember")');
+        });
+
+        function setModalButtonClickEvent(btnid, modalid) {
+
+            $("#" + btnid).click(function () {
+                var valSum = $("#" + modalid + " .validation-summary ul");
+                valSum.removeClass("alert alert-danger");
+                valSum.empty();
+
+                $("#" + btnid).attr("disabled", "disabled");
+
+                $("#" + modalid + " .modal-body form").ajaxSubmit({
+                    success: function (result) {
+
+                        console.log(result);
+
+                        if (result != null) {
+                            if (result.HasError) {
+                                $.each(result.ErrorMessages, function (index, item) {
+                                    var li = $("<li></li>");
+                                    li.text(item.ErrorMessage);
+
+                                    valSum.append(li);
+                                });
+
+                                valSum.addClass("alert alert-danger");
+                                $("#" + btnid).removeAttr("disabled");
+                            }
+                            else {
+                                var resSum = $("#" + modalid + " .result-summary ul");
+                                var li = $("<li></li>");
+                                li.text(result.ResultMessage);
+
+                                resSum.append(li);
+                                resSum.parent().fadeIn(400, function () {
+                                    setTimeout(function () {
+                                        $("#" + modalid).modal('hide');
+                                        $("#list").load('@Url.Action("ListMember")');
+                                    }, 3000);
+                                });
+                            }
+                        }
+                    }
+                });
+            });
+
+        }
+
+        function setModalShowEvent(modalid, postUrl) {
+
+            $("#" + modalid).on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+
+                if (button.attr("data-id") != null) {
+                    var id = button.data("id"); // data attribute'ları okur. Yani data-id attribute..
+                    $("#" + modalid + " .modal-body").load(postUrl + '/' + id);
+                }
+                else {
+                    $("#" + modalid + " .modal-body").load(postUrl);
+                }
+            });
+
+        }
+        
+
+        setModalShowEvent("createmodal", '@Url.Action("Create")');
+        setModalButtonClickEvent("btncreatemodal", "createmodal");
+
+        setModalShowEvent("editmodal", '@Url.Action("Edit")');
+        setModalButtonClickEvent("btneditmodal", "editmodal");
+    </script>
+
+}

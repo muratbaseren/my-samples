@@ -1,0 +1,17 @@
+[
+  {
+    "outputFile": "template/assets/styles/index.css",
+    "inputFile": "template/assets/styles/index.scss",
+    "sourceMap": false
+  },
+  {
+    "outputFile": "template/src/assets/styles/index.css",
+    "inputFile": "template/src/assets/styles/index.scss",
+    "sourceMap": false
+  },
+  {
+    "outputFile": "template/src/assets/scripts/index.es5.js",
+    "inputFile": "template/src/assets/scripts/index.js",
+    "sourceMap": false
+  }
+]
