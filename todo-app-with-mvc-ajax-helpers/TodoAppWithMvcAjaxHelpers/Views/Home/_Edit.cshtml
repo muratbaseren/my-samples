@@ -1,0 +1,66 @@
+﻿@model TodoAppWithMvcAjaxHelpers.Todo
+
+<div id="edit_panel">
+    @using (Ajax.BeginForm("Edit", new { Model.Id }, new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, LoadingElementId = "loading", LoadingElementDuration = 300, UpdateTargetId = "edit_panel" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="text-primary font-weight-bold">Edit Task</h4>
+            </div>
+            <div class="card-body">
+                <div class="form-horizontal">
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "font-weight-bold" })
+                        @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.IsCompleted, htmlAttributes: new { @class = "font-weight-bold" })
+                        @Html.EditorFor(model => model.IsCompleted, new { htmlAttributes = new { } })
+                        @Html.ValidationMessageFor(model => model.IsCompleted, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DueDate, htmlAttributes: new { @class = "font-weight-bold" })
+                        @Html.TextBoxFor(model => model.DueDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                        @Html.ValidationMessageFor(model => model.DueDate, "", new { @class = "text-danger" })
+                    </div>
+
+                    @if (ViewBag.State != null)
+                    {
+                        <div class="form-group">
+                            @if (ViewBag.State == "fail")
+                            {
+                                <p class="alert alert-danger">
+                                    <i class="fa fa-remove"></i> @ViewBag.Message
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="alert alert-success">
+                                    <i class="fa fa-check"></i> @ViewBag.Message
+                                </p>
+
+                                <script>
+                                    $("#btn_refresh").click();
+                                </script>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="text-right">
+                    <input type="submit" value="Save" class="btn btn-warning" />
+                    @Ajax.ActionLink("Create New", "Create", null, new AjaxOptions() { HttpMethod = "GET", InsertionMode = InsertionMode.Replace, LoadingElementId = "loading", LoadingElementDuration = 300, UpdateTargetId = "create_panel" }, new { @class = "btn btn-primary" })
+                </div>
+            </div>
+        </div>
+    }
+</div>

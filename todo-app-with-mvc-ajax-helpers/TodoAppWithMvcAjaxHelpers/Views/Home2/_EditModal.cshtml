@@ -1,0 +1,35 @@
+﻿@model TodoAppWithMvcAjaxHelpers.Todo
+
+<div id="modal_edit" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Task : @Model.Text</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="edit_panel">
+                    @Html.Action("Edit", new { id = Model.Id })
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <div class="text-right">
+                    <input type="button" value="Save" class="btn btn-success" onclick="$('#modal_edit form').submit();" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            $("#modal_edit").modal("show");
+
+            $('#modal_edit').on('hidden.bs.modal', function (e) {
+                $("#modal_edit").remove();
+            });
+        });
+    </script>
+</div>

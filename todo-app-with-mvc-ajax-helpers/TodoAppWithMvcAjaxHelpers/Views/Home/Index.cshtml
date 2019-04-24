@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>TODO Main</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <div id="loading" style="display:none;">
+            <i class="fa fa-refresh fa-spin"></i> Yükleniyor..
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        @Html.Partial("_Create")
+    </div>
+    <div class="col-md-2">
+        &nbsp;
+    </div>
+    <div class="col-md-6">
+        @Html.Action("List")
+    </div>
+</div>
+

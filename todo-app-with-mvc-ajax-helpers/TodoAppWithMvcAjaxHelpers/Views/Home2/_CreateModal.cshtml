@@ -1,0 +1,35 @@
+﻿@model TodoAppWithMvcAjaxHelpers.Todo
+
+<div id="modal_create" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="create_panel">
+                    @Html.Action("Create")
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <div class="text-right">
+                    <input type="button" value="Create" class="btn btn-success" onclick="$('#modal_create form').submit();" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            $("#modal_create").modal("show");
+
+            $('#modal_create').on('hidden.bs.modal', function (e) {
+                $("#modal_create").remove();
+            });
+        });
+    </script>
+</div>
