@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div class="text-center">
+    @if (ViewBag.Error != null)
+    {
+        <div class="text-danger">
+            <h3>Rest Response Error!!</h3>
+            <div>
+                @ViewBag.Error
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-success">
+            <h3>Successfully</h3>
+            <div>
+                Data sent to redis!!<br />
+                @ViewBag.Result
+            </div>
+        </div>
+    }
+</div>
