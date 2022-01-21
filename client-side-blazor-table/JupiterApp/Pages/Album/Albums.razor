@@ -1,0 +1,189 @@
+﻿@page "/albums"
+@using JupiterApp.Data
+@inject JupiterApp.Data.IAlbumService _albumService
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h3>Albums</h3>
+        <hr />
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <button type="button" class="btn btn-primary btn-sm shadow rounded mb-3" @onclick="@(() => _albums.Add(new AlbumRow { Id = -1, Name = "xxx", State  = RowState.Added }))"><small><i class="fa fa-plus mr-2"></i>Create New</small></button>
+        <button type="button" class="btn btn-secondary btn-sm shadow rounded mb-3" @onclick="ReloadData"><small><i class="fa fa-sync mr-2"></i>Refresh</small></button>
+
+        @if (ShowSave())
+        {
+            <button type="button" class="btn btn-info btn-sm shadow rounded mb-3" @onclick="Save"><small><i class="fa fa-save mr-2"></i>Save</small></button>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 table-responsive">
+        @if (_albums == null)
+        {
+            <p>there is no album yet.</p>
+        }
+        else
+        {
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Desc</th>
+                        <th>Genre</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var album in _albums)
+                    {
+                        <tr class="@(GetRowStateBgColor(album))">
+                            <td>
+                                @switch (album.State)
+                                {
+                                    case RowState.None:
+                                        <i class=""></i>
+                                        break;
+                                    case RowState.Added:
+                                        <i class="fa fa-plus text-primary"></i>
+                                        break;
+                                    case RowState.Edited:
+                                        <i class="fa fa-asterisk text-warning"></i>
+                                        break;
+                                    case RowState.Deleted:
+                                        <i class="fa fa-times text-danger"></i>
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @if (album.Mode == RowMode.Editing)
+                                {
+                                    <input type="text" @bind="album.Name" class="form-control" placeholder="album name" />
+                                }
+                                else
+                                {
+                                    @album.Name
+                                }
+                            </td>
+                            <td>
+                                @if (album.Mode == RowMode.Editing)
+                                {
+                                    <input type="text" @bind="album.Desc" class="form-control" placeholder="album desc" />
+                                }
+                                else
+                                {
+                                    @album.Desc
+                                }
+                            </td>
+                            <td>
+                                @if (album.Mode == RowMode.Editing)
+                                {
+                                <select @bind="album.Genre" class="form-control">
+                                    @foreach (var genre in Enum.GetValues(typeof(AlbumGenre)))
+                                    {
+                                        <option value="@genre">@(((AlbumGenre)genre).GetEnumDisplayName())</option>
+                                    }
+                                </select>
+                                }
+                                else
+                                {
+                                    @album.Genre.GetEnumDisplayName()
+                                }
+                            </td>
+                            <td>
+                                @if (album.Mode == RowMode.Editing)
+                                {
+                                    <button type="button" class="btn btn-outline-success btn-sm shadow rounded" @onclick="@(() => { album.State = RowState.Edited; album.Mode = RowMode.None; })"><small><i class="fa fa-check"></i></small></button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm shadow rounded" @onclick="@(() => album.Mode = RowMode.None)"><small><i class="fa fa-times"></i></small></button>
+                                }
+                                else if (album.Mode == RowMode.Deleting)
+                                {
+                                    <button type="button" class="btn btn-outline-success btn-sm shadow rounded" @onclick="@(() => { album.State = RowState.Deleted; album.Mode = RowMode.None; })"><small><i class="fa fa-check"></i></small></button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm shadow rounded" @onclick="@(() => album.Mode = RowMode.None)"><small><i class="fa fa-times"></i></small></button>
+                                }
+                                else
+                                {
+
+                                    if (album.State == RowState.Added)
+                                    {
+                                        <button type="button" class="btn btn-outline-primary btn-sm shadow rounded" disabled><small><i class="fa fa-edit"></i></small></button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm shadow rounded" @onclick="@(() => _albums.Remove(album))"><small><i class="fa fa-trash"></i></small></button>
+                                    }
+                                    else if (album.State == RowState.Edited)
+                                    {
+                                        <button type="button" class="btn btn-outline-secondary btn-sm shadow rounded" @onclick="@(() => _albumService.ResetAlbum(album))"><small><i class="fa fa-undo"></i></small></button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm shadow rounded" @onclick="@(() => album.Mode = RowMode.Editing)"><small><i class="fa fa-edit"></i></small></button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm shadow rounded" @onclick="@(() => album.Mode = RowMode.Deleting)"><small><i class="fa fa-trash"></i></small></button>
+                                    }
+                                    else if (album.State == RowState.Deleted)
+                                    {
+                                        <button type="button" class="btn btn-outline-secondary btn-sm shadow rounded" @onclick="@(() => _albumService.ResetAlbum(album))"><small><i class="fa fa-undo"></i></small></button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm shadow rounded" disabled><small><i class="fa fa-edit"></i></small></button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm shadow rounded" disabled><small><i class="fa fa-trash"></i></small></button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-outline-primary btn-sm shadow rounded" @onclick="@(() => album.Mode = RowMode.Editing)"><small><i class="fa fa-edit"></i></small></button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm shadow rounded" @onclick="@(() => album.Mode = RowMode.Deleting)"><small><i class="fa fa-trash"></i></small></button>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@code {
+    private List<AlbumRow> _albums;
+
+    private string GetRowStateBgColor(AlbumRow album)
+    {
+        //switch (album.State)
+        //{
+        //    case RowState.None:
+        //        return string.Empty;
+        //    case RowState.Added:
+        //        return "bg-success";
+        //    case RowState.Edited:
+        //        return "bg-warning";
+        //    case RowState.Deleted:
+        //        return "bg-danger";
+        //    default:
+        //        return string.Empty;
+        //}
+
+        return string.Empty;
+    }
+
+    private bool ShowSave()
+    {
+        return _albums.Any(x => x.State != RowState.None);
+    }
+
+    private void Save()
+    {
+        _albumService.Save(_albums.Where(x => x.State != RowState.None).ToList());
+        ReloadData();
+    }
+
+    private void ReloadData()
+    {
+        _albums = _albumService.GetAlbumRows();
+    }
+
+    protected override void OnInitialized()
+    {
+        ReloadData();
+        base.OnInitialized();
+    }
+}

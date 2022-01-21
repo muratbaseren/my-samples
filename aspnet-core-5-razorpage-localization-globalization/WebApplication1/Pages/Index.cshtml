@@ -1,0 +1,61 @@
+﻿@page
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Localization
+@model IndexModel
+@inject IViewLocalizer Localizer
+@inject Services.CommonLocalizationService LocalizerCommon
+@inject IStringLocalizer LocalizerString
+@{
+    ViewData["Title"] = "Home page";
+ var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+ var requestCulture = requestCultureFeature.RequestCulture;
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    <table class="table culture-table">
+        <tr>
+            <td>Common Resource</td>
+            <td>@LocalizerCommon.Get("Dünya")</td>
+        </tr>
+        <tr>
+            <td>Common Resource - StringLocalizer</td>
+            <td>@LocalizerString["Dünya"]</td>
+        </tr>
+        <tr>
+            <td>View Resource</td>
+            <td>@Localizer["Merhaba"]</td>
+        </tr>
+        <tr>
+            <td style="width:50%;">Culture</td>
+            <td>@requestCulture.Culture.DisplayName {@requestCulture.Culture.Name}</td>
+        </tr>
+        <tr>
+            <td>UI Culture</td>
+            <td>@requestCulture.UICulture.Name</td>
+        </tr>
+        <tr>
+            <td>UICulture Parent</td>
+            <td>@requestCulture.UICulture.Parent</td>
+        </tr>
+        <tr>
+            <td>Date</td>
+            <td>@DateTime.Now.ToLongDateString()</td>
+        </tr>
+        <tr>
+            <td>Currency</td>
+            <td>
+                @(12345.00m.ToString("C2"))
+            </td>
+        </tr>
+        <tr>
+            <td>Number</td>
+            <td>
+                @(123.45m.ToString("F2"))
+            </td>
+        </tr>
+    </table>
+</div>

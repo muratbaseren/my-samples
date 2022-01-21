@@ -1,0 +1,35 @@
+﻿@model TodoStatus
+
+<h4>High Priority</h4>
+<ul>
+    @foreach (TodoItem item in StaticDataSource.Items.Where(x => x.Status == Model && x.IsHighPriority == true))
+    {
+        <li>
+            <a href="#" class="item-link item-content" data-id="@item.Id" data-list="@Model">
+                <div class="item-media">
+                    <i class="fa fa-exclamation-triangle text-color-red"></i>
+                </div>
+                <div class="item-inner">
+                    <div class="item-title">@item.Text</div>
+                </div>
+            </a>
+        </li>
+    }
+</ul>
+<div>&nbsp;</div>
+<h4>Low Priority</h4>
+<ul>
+    @foreach (TodoItem item in StaticDataSource.Items.Where(x => x.Status == Model && x.IsHighPriority == false))
+    {
+        <li>
+            <a href="#" class="item-link item-content" data-id="@item.Id" data-list="@Model">
+                <div class="item-media">
+                    <i class="fa fa-exclamation-triangle text-color-orange"></i>
+                </div>
+                <div class="item-inner">
+                    <div class="item-title">@item.Text</div>
+                </div>
+            </a>
+        </li>
+    }
+</ul>

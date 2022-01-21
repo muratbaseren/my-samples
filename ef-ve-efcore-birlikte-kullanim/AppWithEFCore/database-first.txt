@@ -1,0 +1,16 @@
+﻿https://www.learnentityframeworkcore.com/walkthroughs/existing-database
+
+
+// Package Manager Console - https://www.learnentityframeworkcore.com/walkthroughs/existing-database#visual-studio
+Scaffold-DbContext "Server=(localdb)\mssqllocaldb;Database=EFveEFCoreBirlikteDB;Integrated Security=SSPI" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Model -Context "DatabaseContext" -DataAnnotations
+
+// PowerShell - https://www.learnentityframeworkcore.com/walkthroughs/existing-database#model-configuration
+dotnet ef dbcontext scaffold "Server=(localdb)\mssqllocaldb;Database=EFveEFCoreBirlikteDB;Integrated Security=SSPI" Microsoft.EntityFrameworkCore.SqlServer -o Model -c "DatabaseContext" --data-annotations
+
+// PowerShell (Updating the Model) - https://www.learnentityframeworkcore.com/walkthroughs/existing-database#updating-the-model
+dotnet ef dbcontext scaffold "Server=(localdb)\mssqllocaldb;Database=EFveEFCoreBirlikteDB;Integrated Security=SSPI" Microsoft.EntityFrameworkCore.SqlServer --force -c "DatabaseContext" --data-annotations
+
+
+// EF 6 ve EF Core projesi beraber olan solution da, EF 6 package manager console komutları çalıştırılırken EntityFramework6\ ön eki kullanılır. örneğin;
+EntityFramework6\Add-Migration ColumnAuthorAddedAtAlbums
+EntityFramework6\Update-Database

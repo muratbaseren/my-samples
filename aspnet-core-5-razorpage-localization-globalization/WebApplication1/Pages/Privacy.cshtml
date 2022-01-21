@@ -1,0 +1,19 @@
+﻿@page
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer LocalizerString
+@model PrivacyModel
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
+
+<table>
+    <tr>
+        <td>Common Resource - StringLocalizer</td>
+    </tr>
+    <tr>
+        <td>@LocalizerString["Dünya"]</td>
+    </tr>
+</table>

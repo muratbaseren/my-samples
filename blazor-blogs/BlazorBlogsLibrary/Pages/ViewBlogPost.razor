@@ -1,0 +1,147 @@
+﻿@page "/ViewBlogPost/{BlogPostId}"
+
+@using Microsoft.AspNetCore.Http
+@using BlazorBlogs.Data;
+@using BlazorBlogs.Data.Models;
+@using static Toolbelt.Blazor.HeadElement.MetaElement
+@inject IJSRuntime JSRuntime
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject BlogsService _BlogsService
+@inject IHttpContextAccessor httpContextAccessor
+@inject NavigationManager NavigationManager
+@inject IHeadElementHelper HeadElementHelper
+@inject DisqusState DisqusState
+@inherits OwningComponentBase<BlogsService>
+
+<Title>@SelectedBlog.BlogTitle</Title>
+<Meta Property="og:url" Content="@AbsoluteUrlOfThisPage" />
+<Meta Property="og:title" Content="@SelectedBlog.BlogTitle" />
+<h4>
+    <button type="button" class="btn btn-primary" @onclick="Back">[Back]</button>
+    @if (UserIsAdminOfBlogPost)
+    {
+        <button type="button" class="btn btn-secondary" @onclick="EditBlog">[Edit Blog]</button>
+    }
+</h4>
+<br />
+<i>@SelectedBlog.BlogDate.ToShortDateString()</i>
+<span><b>@SelectedBlog.BlogDisplayName</b></span>
+<div>
+    <h1>@SelectedBlog.BlogTitle</h1>
+</div>
+<hr />
+<div>
+    <div>
+        @((MarkupString)SelectedBlog.BlogContent)
+    </div>
+</div>
+<BlogAdministration @ref="BlogAdministrationControl" BlogUpdated="BlogUpdatedEvent" />
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    [Parameter] public string BlogPostId { get; set; }
+
+    BlogDTO SelectedBlog = new BlogDTO() { BlogId = 0, BlogDate = DateTime.Now, BlogTitle = "", BlogDisplayName = "" };
+
+    BlogAdministration BlogAdministrationControl;
+    System.Security.Claims.ClaimsPrincipal CurrentUser;
+    bool UserIsAdminOfBlogPost = false;
+    string AbsoluteUrlOfThisPage => NavigationManager.ToAbsoluteUri($"ViewBlogPost/{BlogPostId}").AbsoluteUri;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            SelectedBlog = @Service.GetBlog(Convert.ToInt32(BlogPostId));
+
+            // Get the current user
+            CurrentUser = (await authenticationStateTask).User;
+
+            if (CurrentUser.Identity.IsAuthenticated)
+            {
+                if (SelectedBlog.BlogId != 0)
+                {
+                    if (CurrentUser.Identity.Name.ToLower() == SelectedBlog.BlogUserName.ToLower())
+                    {
+                        UserIsAdminOfBlogPost = true;
+                    }
+                }
+            }
+        }
+        catch
+        {
+            SelectedBlog = new BlogDTO() { BlogDate = DateTime.Now, BlogTitle = "ERROR - Page Not Found" };
+            return;
+        }
+    }
+
+    protected override async Task
+        OnAfterRenderAsync(bool firstRender)
+    {
+        if (SelectedBlog.BlogId > 0)
+        {
+            try
+            {
+                string url = NavigationManager.ToAbsoluteUri($"ViewBlogPost/{BlogPostId}").AbsoluteUri;
+
+                if (SelectedBlog.GoogleTrackingID.Trim() != "")
+                {
+                    try
+                    {
+                        await GoogleInterop.gaTracking(
+                            JSRuntime,
+                            SelectedBlog.GoogleTrackingID.Trim()
+                            );
+                    }
+                    catch { }
+                }
+
+                if (Convert.ToBoolean(SelectedBlog.DisqusEnabled))
+                {
+                    try
+                    {
+                        await DisqusInterop.ResetDisqus(
+                            JSRuntime,
+                            BlogPostId.ToString(),
+                            url,
+                            SelectedBlog.BlogTitle);
+
+                        DisqusState.SetDisplayDisqus(true);
+                    }
+                    catch { }
+                }
+            }
+            catch
+            {
+                SelectedBlog = new BlogDTO() { BlogDate = DateTime.Now, BlogTitle = "ERROR - Page Not Found" };
+                return;
+            }
+        }
+    }
+
+    void EditBlog()
+    {
+        BlogAdministrationControl.EditBlog(SelectedBlog);
+    }
+
+    void Back()
+    {
+        string url = NavigationManager.ToAbsoluteUri($"ViewBlogPost/../").AbsoluteUri;
+        NavigationManager.NavigateTo(url);
+    }
+
+    void BlogUpdatedEvent()
+    {
+        try
+        {
+            SelectedBlog = _BlogsService.GetBlog(Convert.ToInt32(BlogPostId));
+        }
+        catch
+        {
+            // Blog was deleted
+            Back();
+        }
+    }
+}

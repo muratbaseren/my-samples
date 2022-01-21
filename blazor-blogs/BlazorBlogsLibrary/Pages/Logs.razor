@@ -1,0 +1,183 @@
+﻿@page "/logs"
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity;
+@using BlazorBlogs.Data;
+@using BlazorBlogs.Data.Models;
+@inject IHttpContextAccessor httpContextAccessor
+@inject UserManager<ApplicationUser> _UserManager
+@inject RoleManager<IdentityRole> _RoleManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IConfiguration _configuration
+@inject DisqusState DisqusState
+@inherits OwningComponentBase<BlogsService>
+
+<h1>Logs</h1>
+<!-- AuthorizeView allows us to only show sections of the page -->
+<!-- based on the security on the current user -->
+<AuthorizeView>
+    <!-- Show this section if the user is logged in -->
+    <Authorized>
+        @if (@context.User.IsInRole(ADMINISTRATION_ROLE))
+        {
+            @if (colLogs == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                <span style="color:red">@strError</span>
+                <!-- Button to delete the Logs -->
+                <button class="btn btn-sm btn-danger"
+                        @onclick="DeleteLogs">
+                    Delete Logs
+                </button>
+                <br /><br />
+                <!-- Show the logs -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Action</th>
+                            <th>User Name</th>
+                            <th>IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in colLogs.Logs)
+                        {
+                            <tr>
+                                <td>@log.LogDate.ToShortDateString() @log.LogDate.ToShortTimeString()</td>
+                                <td>@log.LogAction</td>
+                                <td>@log.LogUserName</td>
+                                <td>@log.LogIpaddress</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+            <br />
+            <button class="btn btn-warning"
+                    @onclick="Previous">
+                <b>&#x3C;</b>
+            </button>
+            @if (ShowNextButton)
+            {
+                <button class="btn btn-warning"
+                        @onclick="Next">
+                    <b>&#x3E;</b>
+                </button>
+            }
+
+            @if (ConFirmDeletePopup)
+            {
+                <div class="modal" tabindex="-1" style="display:block;background-color:gainsboro" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Delete All Logs?</h3>
+                            </div>
+                            <div class="modal-body">
+                                <button class="btn btn-primary"
+                                        @onclick="DeleteYes">
+                                    Yes
+                                </button>
+                                <button class="btn btn-danger"
+                                        @onclick="DeleteNo">
+                                    No
+                                </button>
+                                <br />
+                                <span style="color: red">@strError</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </Authorized>
+    <!-- Show this section if the user is not logged in -->
+    <NotAuthorized>
+        <p>You're not signed in.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    // AuthenticationState is available as a CascadingParameter
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    public System.Security.Claims.ClaimsPrincipal CurrentUser;
+    string ADMINISTRATION_ROLE = "Administrators";
+
+    string strError;
+    public bool ConFirmDeletePopup = false;
+    int CurrentPage = 1;
+    LogsPaged colLogs =
+        new LogsPaged()
+        {
+            Logs = new List<BlazorBlogs.Data.Models.Logs>(),
+            LogCount = 0
+        };
+
+    bool ShowNextButton
+    {
+        get
+        {
+            return (
+                (colLogs.LogCount > (CurrentPage * 10))
+                );
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Get the current user
+        CurrentUser = (await authenticationStateTask).User;
+
+        colLogs = await @Service.GetLogsAsync(CurrentPage);
+        DisqusState.SetDisplayDisqus(false);
+    }
+
+    async Task Previous()
+    {
+        if (CurrentPage > 1)
+        {
+            CurrentPage = CurrentPage - 1;
+            colLogs = await @Service.GetLogsAsync(CurrentPage);
+        }
+    }
+
+    async Task Next()
+    {
+        CurrentPage = CurrentPage + 1;
+        colLogs = await @Service.GetLogsAsync(CurrentPage);
+    }
+
+    void DeleteLogs()
+    {
+        ConFirmDeletePopup = true;
+    }
+
+    void DeleteNo()
+    {
+        ConFirmDeletePopup = false;
+    }
+
+    async Task DeleteYes()
+    {
+        try
+        {
+            // Delete the Logs
+            var result = await @Service.DelteLogsAsync(CurrentUser.Identity.Name);
+          
+            CurrentPage = 1;
+            colLogs = await @Service.GetLogsAsync(CurrentPage);
+
+            ConFirmDeletePopup = false;
+        }
+        catch (Exception ex)
+        {
+            strError = ex.GetBaseException().Message;
+        }
+    }
+}
