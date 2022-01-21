@@ -1,0 +1,46 @@
+﻿@using Newtonsoft.Json
+@using Newtonsoft.Json.Serialization
+
+@model HomeViewModel
+
+@{
+    var serializationSettings = new JsonSerializerSettings()
+    {
+        ContractResolver = new CamelCasePropertyNamesContractResolver(),
+        StringEscapeHandling = StringEscapeHandling.EscapeHtml
+    };
+
+    var data = Html.Raw(
+        HttpUtility.JavaScriptStringEncode(
+            JsonConvert.SerializeObject(Model.VueData, Formatting.None, serializationSettings), false)
+        );
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Vue and .NET MVC</title>
+</head>
+<body>
+    <main id="vue-app">
+        <header-component v-bind:menu-items="menu"></header-component>
+        <div>@Model.RazorMessage</div>
+        <div>{{message}}</div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="~/Contents/js/header-component.js"></script>
+
+    <script>
+        new Vue({
+            el: '#vue-app',
+            data: function () {
+                console.log('@data');
+                return JSON.parse('@data')
+            }
+        });
+    </script>
+</body>
+</html>
