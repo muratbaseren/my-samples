@@ -1,0 +1,57 @@
+﻿@page
+@model DEMO.Pages.Expenses.CreateModel
+
+<div class="row mb-3">
+    <div class="col">
+        <h1>Create New Expense</h1>
+        <hr />
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-4">
+        <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="Date"></label>
+                <input asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger small"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger small"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Category"></label>
+                <input asp-for="Category" class="form-control" />
+                <span asp-validation-for="Category" class="text-danger small"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <textarea rows="2" asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger small"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-page="List" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        @if (ViewData["result"] != null)
+        {
+            string res = ViewData["result"].ToString();
+
+            if (res == "ok")
+            {
+                @:toastr.success("Harcama kaydedildi.", "Kaydedildi");
+            }
+            else
+            {
+                @:toastr.error("Hata oluştu.", "Hata");
+            }
+        }
+    </script>
+}

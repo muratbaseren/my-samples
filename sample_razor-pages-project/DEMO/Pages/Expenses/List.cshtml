@@ -1,0 +1,206 @@
+﻿@page
+@model DEMO.Pages.Expenses.ListModel
+
+@section Styles{
+    <link href="~/lib/datatables/css/jquery.dataTables.min.css" rel="stylesheet" />
+}
+
+<div class="row mb-3">
+    <div class="col">
+        <h1>Expenses</h1>
+        <hr />
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-4">
+        <canvas id="myChart" height="200"></canvas>
+    </div>
+    <div class="col-4">
+        <canvas id="myChart2" height="200"></canvas>
+    </div>
+    <div class="col-4">
+        <canvas id="myChart3" height="200"></canvas>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        <a asp-page="Create" class="btn btn-primary btn-sm">Create New Expense</a>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        <table class="table-sm table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th data-orderable="false"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (DEMO.Entities.Expense expense in Model.Expenses)
+                {
+                    <tr>
+                        <td>@expense.Category</td>
+                        <td data-order="@expense.Date.Ticks">@expense.Date.ToShortDateString()</td>
+                        <td>@expense.Price.ToString("C2")</td>
+                        <td>@expense.Description</td>
+                        <td width="80">
+                            <a asp-page="Edit" asp-route-id="@expense.Id" class="btn btn-sm"><i class="fa fa-edit text-info"></i></a>
+                            <a onclick="return confirm('Harcama silinsin mi?');" asp-page-handler="Delete" asp-page="List" asp-route-id="@expense.Id" class="btn btn-sm"><i class="fa fa-trash text-danger"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/Chartjs/chart.min.js"></script>
+    <script>
+        $(function () {
+            $("table").DataTable();
+
+            @{
+                var grp = Model.Expenses.GroupBy(x => x.Category).OrderByDescending(x => x.Count()).Select(x=> new { x.Key, Count = x.Count(), Total = x.Sum(y => y.Price) });
+                var grp2 = Model.Expenses.GroupBy(x => x.Date.Year).OrderBy(x => x.Key).Select(x => new { x.Key, Count = x.Count() });
+                var grp3 = Model.Expenses.GroupBy(x => x.Date.Year).OrderBy(x => x.Key).Select(x => new { x.Key, Total = x.Sum(y => y.Price) });
+            }
+
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [@Html.Raw(string.Join(',',grp.Select(x=> "'" + x.Key + "(" + x.Count + ")'")))],
+                    datasets: [{
+                        data: [@(string.Join(',',grp.Select(x =>x.Total.ToString("N0").Replace(".",""))))],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display:false
+                        },
+                        title: {
+                            display:true,
+                            text: "Kategorilere Göre Harcama Adetleri ve Toplamları"
+                        }
+                    }
+                }
+            });
+
+            const ctx2 = document.getElementById('myChart2').getContext('2d');
+            const myChart2 = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: [@Html.Raw(string.Join(',',grp2.Select(x=> "'" + x.Key + "'")))],
+                    datasets: [{
+                        data: [@(string.Join(',',grp2.Select(x =>x.Count)))],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: "Yıllara Göre Harcama Adetleri"
+                        }
+                    }
+                }
+            });
+
+            const ctx3 = document.getElementById('myChart3').getContext('2d');
+            const myChart3 = new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    labels: [@Html.Raw(string.Join(',',grp3.Select(x => "'" + x.Key +"'")))],
+                    datasets: [{
+                        data: [@(string.Join(',',grp3.Select(x =>x.Total.ToString("N0").Replace(".", ""))))],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: "Yıllara Göre Harcama Toplamları"
+                        }
+                    }
+                }
+            });
+
+        });
+
+
+    </script>
+}

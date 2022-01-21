@@ -1,0 +1,40 @@
+﻿@page
+@model WebApplication_RazorPagesProject.Pages.Shared.EditDeleteMemberModel
+
+<h1>Edit / Delete Member</h1>
+<hr />
+
+<div class="row">
+    <div class="col-4">
+        @*<form method="post" asp-page-handler="Save">*@
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="Name">Name</label>
+                <input asp-for="Name" class="form-control" placeholder="John" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Surname">Surname</label>
+                <input asp-for="Surname" class="form-control" placeholder="Doe" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Age">Age</label>
+                <input asp-for="Age" class="form-control" placeholder="18" />
+            </div>
+            <div class="form-group">
+                <label asp-for="MemberType">Member Type</label>
+                <select class="form-control" asp-items="@(new SelectList(Model.MemberTypes))" asp-for="MemberType">
+                    <option value="">Seçiniz</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" asp-page-handler="Save">Save</button>
+            <button type="submit" class="btn btn-danger" asp-page-handler="Remove">Delete</button>
+        </form>
+        @*<form method="post" asp-page-handler="Remove">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>*@
+
+        <div class="mt-3">
+            @Model.Result
+        </div>
+    </div>
+</div>
