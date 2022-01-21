@@ -1,0 +1,160 @@
+﻿@page "/diagram"
+
+<div class="row">
+    <div class="col-md-12">
+        <h3>Class Diagram</h3>
+        <hr />
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Add New Item</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Add Class Item</h6>
+                <form>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" @bind="newitem.Name" placeholder="name" />
+                            @*<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>*@
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Display Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" @bind="newitem.DisplayName" placeholder="display name" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Description</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" @bind="newitem.Desc" placeholder="description" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Type</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" @bind="newitem.Type">
+                                <option value="" selected>Select</option>
+                                <option value="string">string</option>
+                                <option value="int">int</option>
+                                <option value="decimal">decimal</option>
+                                <option value="bool">bool</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Length</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" @bind="newitem.StringLength" placeholder="0" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="isrequired">Is Required</label>
+                        <div class="col-sm-9 pt-2">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="isrequired" @bind="newitem.IsRequired">
+                                <label class="custom-control-label" for="isrequired"> is required!</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-9 offset-sm-3">
+                            <button class="btn btn-primary card-link" type="button" @onclick="AddItem"><i class="fa fa-plus mr-2" ></i>Add</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">List of Class Items</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Class Items (@items.Count)</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <small>Name</small>
+                                </th>
+                                <th>
+                                    <small>Display Name</small>
+                                </th>
+                                <th>
+                                    <small>Type</small>
+                                </th>
+                                <th>
+                                    <small>Length</small>
+                                </th>
+                                <th>
+                                    <small>Is Required</small>
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (items.Count == 0)
+                            {
+                                <tr>
+                                    <td align="center" class="text-muted py-5" colspan="6">Herhangi bir class bileşeni bulunmuyor!</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                @foreach (var item in items)
+                                {
+                                    <tr>
+                                        <td>@item.Name</td>
+                                        <td>@item.DisplayName</td>
+                                        <td>@item.Type</td>
+                                        <td>@item.StringLength</td>
+                                        <td>@item.IsRequired</td>
+                                        <td><button class="btn btn-primary btn-sm">Select</button></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 mt-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Code</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Generated Code</h6>
+                <textarea rows="12" class="form-control" readonly>Velit mollis odio sollicitudin lacinia aliquam posuere, sapien elementum lobortis tincidunt, turpis dui ornare nisl, sollicitudin interdum turpis nunc eget sem nulla eu ultricies orci praesent id augue nec lorem pretium congue sit amet ac nunc fusce iaculis lorem eu diam hendrerit at mattis purus dignissim vivamus mauris tellus, fringilla vel dapibus a, blandit quis erat vivamus elementum aliquam luctus etiam fringilla pretium sem vitae sodales mauris id nulla est praesent laoreet, metus vel auctor aliquam, eros purus vulputate leo, eget consequat neque quam id tellus duis ultricies tempor tortor, vitae dignissim ligula mattis nec in hac habitasse platea dictumst.</textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    private IList<ClassItem> items = new List<ClassItem>();
+    private ClassItem newitem = new ClassItem();
+
+    private void AddItem()
+    {
+        items.Add(new ClassItem
+        {
+            Name = newitem.Name,
+            DisplayName = newitem.DisplayName,
+            Desc = newitem.Desc,
+            Type = newitem.Type,
+            StringLength = newitem.StringLength,
+            IsRequired = newitem.IsRequired,
+        });
+
+        newitem.Clear();
+    }
+}

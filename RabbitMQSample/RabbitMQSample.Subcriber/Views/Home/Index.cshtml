@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div>
+    <ul id="list">
+    </ul>
+</div>
+
+
+@section Scripts{
+
+    <script>
+
+        $(function () {
+            setInterval(function () {
+                $.ajax({
+                    url: "/Home/IndexAjax",
+                    method: "GET"
+                }).done(function (result) {
+                    console.log(result);
+
+                    if (result != null) {
+                        var ul = $("#list");
+                        ul.empty();
+                        for (var i = 0; i < result.length; i++) {
+                            var item = result[i];
+                            ul.append("<li>" + item + "</li>");
+                        }
+                    }
+                });
+            }, 1000);
+        })
+
+    </script>
+
+}
