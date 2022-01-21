@@ -1,0 +1,23 @@
+﻿@using System.Security.Claims
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div>
+    <div><b>Username : </b>@ViewBag.Username</div>
+    <div><b>Last Login : </b>@ViewBag.LastLogin</div>
+    <div>
+        <b>Roles : </b><br />
+        <ul class="list-group">
+            @foreach (var role in ViewBag.Roles)
+            {
+                <li class="list-group-item">@role</li>
+            }
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+﻿@model List<Kisi>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<hr />
+
+<ul>
+    @foreach (Kisi kisi in Model)
+    {
+        <li>@kisi.Id - @kisi.Name</li>
+    }
+</ul>
+
