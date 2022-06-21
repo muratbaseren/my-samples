@@ -1,0 +1,38 @@
+﻿@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Home Page";
+    //string token = ViewContext.HttpContext.Session.GetString("token") ?? string.Empty;
+    string token = ViewContext.HttpContext.Request.Cookies["auth"];
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <button class="btn btn-primary" type="button" id="btn">Get Data</button>
+    <div id="result"></div>
+</div>
+
+@section Scripts{
+
+
+    <script>
+        $("#btn").click(function() {
+            $.ajax({
+                method: "GET",
+                url: '@Url.Action("GetData")',
+                headers: {
+                    'Authorization': 'Bearer @token'
+                }
+            }).done(function(data, textStatus) {
+                $("#result").text(data.name + " " + data.surname);
+            }).fail(function(data, textStatus) {
+                console.log(data)
+
+                if (data.status == "401") {
+                    window.location = '@Url.Action("Login","Users")';
+                }
+            });
+        });
+
+    </script>
+}
